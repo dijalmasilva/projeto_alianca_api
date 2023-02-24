@@ -13,9 +13,22 @@ import { Event } from 'src/event/entity/event.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { Auth } from 'src/auth/entity/auth.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { jwtConstants } from 'src/constants/jwt.constants';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { LocalStrategy } from 'src/auth/local.strategy';
+import { AppController } from 'src/app.controller';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Module({
   imports: [
+    PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '31d' },
+    }),
     TypeOrmModule.forFeature([Person, Departament, Event, Auth]),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -34,7 +47,19 @@ import { Auth } from 'src/auth/entity/auth.entity';
     DepartamentController,
     EventController,
     AuthController,
+    AppController,
   ],
-  providers: [PersonService, DepartamentService, EventService, AuthService],
+  providers: [
+    PersonService,
+    DepartamentService,
+    EventService,
+    AuthService,
+    JwtStrategy,
+    LocalStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

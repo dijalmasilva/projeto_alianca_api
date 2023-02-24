@@ -3,6 +3,7 @@ import { PersonService } from 'src/person/person.service';
 import { Equal, Repository } from 'typeorm';
 import { Auth } from 'src/auth/entity/auth.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { Person } from 'src/person/entity/person.entity';
 
 @Injectable()
@@ -11,10 +12,25 @@ export class AuthService {
     @InjectRepository(Auth)
     private readonly authRepository: Repository<Auth>,
     private readonly personService: PersonService,
+    private jwtService: JwtService,
   ) {}
 
   private generateCode(): number {
     return Math.floor(100000 + Math.random() * 900000);
+  }
+
+  async validateUser(username: string, pass: number): Promise<any> {
+    console.log(`validating user: ${username} and ${pass}`);
+    try {
+      const found = await this.authRepository.findOneByOrFail({
+        code: Equal(pass),
+        phoneNumber: Equal(username),
+      });
+
+      return await this.personService.findByNumber(found.phoneNumber);
+    } catch (e) {
+      return null;
+    }
   }
 
   async requestCode(number: string): Promise<number> {
@@ -33,20 +49,15 @@ export class AuthService {
     return register.code;
   }
 
-  async signIn(number: string, code: number): Promise<Person | null> {
-    try {
-      const found = await this.authRepository.findOneByOrFail({
-        code: Equal(code),
-        phoneNumber: Equal(number),
-      });
-
-      return this.personService.findByNumber(found.phoneNumber);
-    } catch (e) {
-      throw new UnauthorizedException('Código inválido', {
-        cause: e,
-        description: 'Código inserido não é válido',
-      });
-    }
+  async login(person: Person) {
+    const payload = {
+      username: person.phoneNumber,
+      sub: person.id,
+      roles: person.roles,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   async signOut(number: string): Promise<void> {

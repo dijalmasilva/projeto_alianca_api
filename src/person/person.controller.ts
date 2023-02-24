@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PersonService } from 'src/person/person.service';
 import { PersonCreateDto } from 'src/person/dto/person-create.dto';
 import { Roles } from 'src/roles.decorator';
@@ -21,7 +21,7 @@ export class PersonController {
 
   @Get('/:id')
   @Roles(ROLE.ADMIN, ROLE.PASTOR, ROLE.LEADER)
-  async findOne(@Query('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.personService.findOne(id);
   }
 }
