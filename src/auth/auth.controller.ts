@@ -36,8 +36,10 @@ export class AuthController {
   }
 
   @Get('/logout')
-  async signOut(@Body() auth: { phoneNumber: string }) {
-    await this.authService.signOut(auth.phoneNumber);
+  async signOut(@Request() req: any) {
+    const user = req.user;
+    await this.authService.signOut(user.username);
+    return {};
   }
 
   @Post('/profile')

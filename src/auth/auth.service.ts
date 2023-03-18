@@ -1,10 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Person as PersonModel, Prisma } from '@prisma/client';
 
 import { Role } from '/configs/roles.config';
 import { PrismaService } from '/prisma.service';
-import { HttpException } from '/types/HttpException';
 
 const MAIN_NUMBER = '+5583998058971';
 
@@ -28,13 +27,7 @@ export class AuthService {
     });
 
     if (!found) {
-      throw HttpException(
-        {
-          message: 'Falha ao autenticar o usuário',
-          errors: { Auth: 'Credenciais inválidas' },
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(`Credencias inválidas`, HttpStatus.UNAUTHORIZED);
     }
 
     const user = await this.prisma.person.findFirst({
@@ -111,7 +104,14 @@ export class AuthService {
   }
 
   async signOut(phoneNumber: string): Promise<void> {
-    await this.prisma.auth.delete({ where: { phoneNumber } });
+    console.log(`sign-out: `, phoneNumber);
+    const count = await this.prisma.auth.count({
+      where: { phoneNumber },
+    });
+
+    if (count > 0) {
+      await this.prisma.auth.delete({ where: { phoneNumber } });
+    }
   }
 
   async getProfile(

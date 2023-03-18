@@ -1,8 +1,7 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '/prisma.service';
-import { HttpException } from '/types/HttpException';
 
 @Injectable()
 export class EventService {
@@ -27,13 +26,7 @@ export class EventService {
   update(id: number, data: Prisma.EventUpdateInput) {
     const found = this.prisma.event.findUnique({ where: { id } });
     if (!found) {
-      throw HttpException(
-        {
-          message: 'Falha ao atualizar o evento',
-          errors: { Event: 'Evento não encontrado' },
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(`Evento não encontrado`, HttpStatus.NOT_FOUND);
     }
 
     return this.prisma.event.update({ where: { id }, data });
