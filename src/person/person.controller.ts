@@ -40,10 +40,20 @@ export class PersonController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Prisma.PersonUpdateInput) {
-    console.log(`updating person`);
-    console.log(data);
-    console.dir(data.churchs);
     return this.personService.update(+id, data);
+  }
+
+  @Get(':id/departaments')
+  @Roles(
+    Role.ADMIN,
+    Role.PASTOR,
+    Role.LEADER,
+    Role.LEVITE,
+    Role.DEACON,
+    Role.COOPERATOR,
+  )
+  getDepartaments(@Param('id') id: string) {
+    return this.personService.getDepartaments(+id);
   }
 
   @Delete(':id')

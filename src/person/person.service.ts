@@ -51,6 +51,13 @@ export class PersonService {
     });
   }
 
+  async getDepartaments(id: number) {
+    return await this.prisma.person.findUnique({
+      where: { id },
+      select: { departamentsAsLeader: true, departamentsAsMember: true },
+    });
+  }
+
   async remove(id: number) {
     const person = await this.prisma.person.findUnique({ where: { id } });
     if (!person) {
