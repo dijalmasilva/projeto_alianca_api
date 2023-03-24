@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '/prisma.service';
@@ -26,10 +26,28 @@ export class DepartamentService {
   update(id: number, data: Prisma.DepartamentUpdateInput) {
     const found = this.prisma.departament.findUnique({ where: { id } });
     if (!found) {
-      throw new HttpException(`Departamento não encontrado`, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        `Departamento não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     return this.prisma.departament.update({ data, where: { id } });
+  }
+
+  findDepartamentsWhereImNotIncluded(personId: number) {
+    return this.prisma.departament.findMany({
+      where: {
+        NOT: {
+          leaderId: personId,
+        },
+        members: {
+          none: {
+            memberId: personId,
+          },
+        },
+      },
+    });
   }
 
   remove(id: number) {
