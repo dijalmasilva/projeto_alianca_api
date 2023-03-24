@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
@@ -54,6 +55,17 @@ export class PersonController {
   )
   getDepartaments(@Param('id') id: string) {
     return this.personService.getDepartaments(+id);
+  }
+
+  @Get('/filter')
+  @Roles(Role.ADMIN, Role.PASTOR, Role.LEADER)
+  getPersonsByNameOrPhoneNumber(
+    @Query('text') text: string,
+    @Query('take') take: string,
+  ) {
+    console.log('text: ', text);
+    const takeResult = take ? +take : 5;
+    return this.personService.findManyByNameOrPhoneNumber(text, takeResult);
   }
 
   @Delete(':id')

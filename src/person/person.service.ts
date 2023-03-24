@@ -58,6 +58,27 @@ export class PersonService {
     });
   }
 
+  async findManyByNameOrPhoneNumber(filter: string, take: number) {
+    return await this.prisma.person.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: filter,
+            },
+          },
+          {
+            phoneNumber: {
+              contains: filter,
+            },
+          },
+        ],
+      },
+      take,
+      distinct: ['name', 'phoneNumber'],
+    });
+  }
+
   async remove(id: number) {
     const person = await this.prisma.person.findUnique({ where: { id } });
     if (!person) {
