@@ -8,6 +8,7 @@ export class DepartamentService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(data: Prisma.DepartamentCreateInput) {
+    console.dir(data);
     return this.prisma.departament.create({ data });
   }
 

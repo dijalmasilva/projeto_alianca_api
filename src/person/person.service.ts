@@ -52,10 +52,25 @@ export class PersonService {
   }
 
   async getDepartaments(id: number) {
-    return await this.prisma.person.findUnique({
+    const resultDepartaments = await this.prisma.person.findUnique({
       where: { id },
-      select: { departamentsAsLeader: true, departamentsAsMember: true },
+      select: {
+        departamentsAsLeader: true,
+        departamentsAsMember: true,
+      },
     });
+
+    const departamentsAsMember = await this.prisma.departament.findMany({
+      where: {
+        AND: resultDepartaments.departamentsAsMember.map((d) => ({
+          id: d.departamentId,
+        })),
+      },
+    });
+    return {
+      departamentsAsLeader: resultDepartaments.departamentsAsLeader,
+      departamentsAsMember,
+    };
   }
 
   async findManyByNameOrPhoneNumber(filter: string, take: number) {

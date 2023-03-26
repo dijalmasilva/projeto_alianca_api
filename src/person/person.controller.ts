@@ -63,7 +63,6 @@ export class PersonController {
     @Query('text') text: string,
     @Query('take') take: string,
   ) {
-    console.log('text: ', text);
     const takeResult = take ? +take : 5;
     return this.personService.findManyByNameOrPhoneNumber(text, takeResult);
   }
