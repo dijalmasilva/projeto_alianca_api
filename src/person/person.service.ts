@@ -51,25 +51,25 @@ export class PersonService {
     });
   }
 
-  async getDepartaments(id: number) {
-    const resultDepartaments = await this.prisma.person.findUnique({
+  async getDepartments(id: number) {
+    const resultDepartments = await this.prisma.person.findUnique({
       where: { id },
       select: {
-        departamentsAsLeader: true,
-        departamentsAsMember: true,
+        departmentsAsLeader: true,
+        departmentsAsMember: true,
       },
     });
 
-    const departamentsAsMember = await this.prisma.departament.findMany({
+    const departmentsAsMember = await this.prisma.department.findMany({
       where: {
-        AND: resultDepartaments.departamentsAsMember.map((d) => ({
-          id: d.departamentId,
+        AND: resultDepartments.departmentsAsMember.map((d) => ({
+          id: d.departmentId,
         })),
       },
     });
     return {
-      departamentsAsLeader: resultDepartaments.departamentsAsLeader,
-      departamentsAsMember,
+      departmentsAsLeader: resultDepartments.departmentsAsLeader,
+      departmentsAsMember,
     };
   }
 

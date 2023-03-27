@@ -4,15 +4,15 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '/prisma.service';
 
 @Injectable()
-export class DepartamentService {
+export class DepartmentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: Prisma.DepartamentCreateInput) {
-    return this.prisma.departament.create({ data });
+  create(data: Prisma.DepartmentCreateInput) {
+    return this.prisma.department.create({ data });
   }
 
   findAll() {
-    return this.prisma.departament.findMany({
+    return this.prisma.department.findMany({
       orderBy: {
         createdAt: 'desc',
       },
@@ -20,11 +20,11 @@ export class DepartamentService {
   }
 
   findOne(id: number) {
-    return this.prisma.departament.findUnique({ where: { id } });
+    return this.prisma.department.findUnique({ where: { id } });
   }
 
-  update(id: number, data: Prisma.DepartamentUpdateInput) {
-    const found = this.prisma.departament.findUnique({ where: { id } });
+  update(id: number, data: Prisma.DepartmentUpdateInput) {
+    const found = this.prisma.department.findUnique({ where: { id } });
     if (!found) {
       throw new HttpException(
         `Departamento não encontrado`,
@@ -32,11 +32,11 @@ export class DepartamentService {
       );
     }
 
-    return this.prisma.departament.update({ data, where: { id } });
+    return this.prisma.department.update({ data, where: { id } });
   }
 
-  findDepartamentsWhereImNotIncluded(personId: number) {
-    return this.prisma.departament.findMany({
+  findDepartmentsWhereImNotIncluded(personId: number) {
+    return this.prisma.department.findMany({
       where: {
         NOT: {
           leaderId: personId,
@@ -51,6 +51,6 @@ export class DepartamentService {
   }
 
   remove(id: number) {
-    return this.prisma.departament.delete({ where: { id } });
+    return this.prisma.department.delete({ where: { id } });
   }
 }

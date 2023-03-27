@@ -50,14 +50,14 @@ CREATE TABLE "PersonsOnChurchs" (
 -- CreateTable
 CREATE TABLE "Auth" (
     "phoneNumber" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
+    "code" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Auth_pkey" PRIMARY KEY ("phoneNumber")
 );
 
 -- CreateTable
-CREATE TABLE "Departament" (
+CREATE TABLE "Department" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "leaderId" INTEGER NOT NULL,
@@ -65,16 +65,16 @@ CREATE TABLE "Departament" (
     "churchId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Departament_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Department_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "MembersOnDepartaments" (
+CREATE TABLE "MembersOnDepartments" (
     "memberId" INTEGER NOT NULL,
-    "departamentId" INTEGER NOT NULL,
+    "departmentId" INTEGER NOT NULL,
     "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "MembersOnDepartaments_pkey" PRIMARY KEY ("memberId","departamentId")
+    CONSTRAINT "MembersOnDepartments_pkey" PRIMARY KEY ("memberId","departmentId")
 );
 
 -- CreateTable
@@ -89,7 +89,7 @@ CREATE TABLE "Event" (
     "preacherId" INTEGER,
     "initiationId" INTEGER,
     "offertoryId" INTEGER,
-    "departamentId" INTEGER,
+    "departmentId" INTEGER,
     "churchId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -147,27 +147,6 @@ CREATE UNIQUE INDEX "Person_phoneNumber_key" ON "Person"("phoneNumber");
 -- CreateIndex
 CREATE UNIQUE INDEX "Auth_phoneNumber_key" ON "Auth"("phoneNumber");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Departament_leaderId_key" ON "Departament"("leaderId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Departament_churchId_key" ON "Departament"("churchId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Event_preacherId_key" ON "Event"("preacherId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Event_initiationId_key" ON "Event"("initiationId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Event_offertoryId_key" ON "Event"("offertoryId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Event_departamentId_key" ON "Event"("departamentId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Event_churchId_key" ON "Event"("churchId");
-
 -- AddForeignKey
 ALTER TABLE "PersonsOnChurchs" ADD CONSTRAINT "PersonsOnChurchs_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -175,16 +154,16 @@ ALTER TABLE "PersonsOnChurchs" ADD CONSTRAINT "PersonsOnChurchs_personId_fkey" F
 ALTER TABLE "PersonsOnChurchs" ADD CONSTRAINT "PersonsOnChurchs_churchId_fkey" FOREIGN KEY ("churchId") REFERENCES "Church"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Departament" ADD CONSTRAINT "Departament_leaderId_fkey" FOREIGN KEY ("leaderId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Department" ADD CONSTRAINT "Department_leaderId_fkey" FOREIGN KEY ("leaderId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Departament" ADD CONSTRAINT "Departament_churchId_fkey" FOREIGN KEY ("churchId") REFERENCES "Church"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Department" ADD CONSTRAINT "Department_churchId_fkey" FOREIGN KEY ("churchId") REFERENCES "Church"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "MembersOnDepartaments" ADD CONSTRAINT "MembersOnDepartaments_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "MembersOnDepartments" ADD CONSTRAINT "MembersOnDepartments_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "MembersOnDepartaments" ADD CONSTRAINT "MembersOnDepartaments_departamentId_fkey" FOREIGN KEY ("departamentId") REFERENCES "Departament"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "MembersOnDepartments" ADD CONSTRAINT "MembersOnDepartments_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_preacherId_fkey" FOREIGN KEY ("preacherId") REFERENCES "Person"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -196,7 +175,7 @@ ALTER TABLE "Event" ADD CONSTRAINT "Event_initiationId_fkey" FOREIGN KEY ("initi
 ALTER TABLE "Event" ADD CONSTRAINT "Event_offertoryId_fkey" FOREIGN KEY ("offertoryId") REFERENCES "Person"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_departamentId_fkey" FOREIGN KEY ("departamentId") REFERENCES "Departament"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Event" ADD CONSTRAINT "Event_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_churchId_fkey" FOREIGN KEY ("churchId") REFERENCES "Church"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

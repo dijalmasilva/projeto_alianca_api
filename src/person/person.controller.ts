@@ -44,7 +44,7 @@ export class PersonController {
     return this.personService.update(+id, data);
   }
 
-  @Get(':id/departaments')
+  @Get(':id/departments')
   @Roles(
     Role.ADMIN,
     Role.PASTOR,
@@ -53,8 +53,8 @@ export class PersonController {
     Role.DEACON,
     Role.COOPERATOR,
   )
-  getDepartaments(@Param('id') id: string) {
-    return this.personService.getDepartaments(+id);
+  getDepartments(@Param('id') id: string) {
+    return this.personService.getDepartments(+id);
   }
 
   @Get('/filter')
