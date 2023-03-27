@@ -60,13 +60,17 @@ export class PersonService {
       },
     });
 
-    const departmentsAsMember = await this.prisma.department.findMany({
-      where: {
-        AND: resultDepartments.departmentsAsMember.map((d) => ({
-          id: d.departmentId,
-        })),
-      },
-    });
+    let departmentsAsMember = [];
+
+    if (resultDepartments.departmentsAsMember.length > 0) {
+      departmentsAsMember = await this.prisma.department.findMany({
+        where: {
+          AND: resultDepartments.departmentsAsMember.map((d) => ({
+            id: d.departmentId,
+          })),
+        },
+      });
+    }
     return {
       departmentsAsLeader: resultDepartments.departmentsAsLeader,
       departmentsAsMember,
