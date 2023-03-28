@@ -25,7 +25,8 @@ CREATE TABLE "Person" (
 -- CreateTable
 CREATE TABLE "Church" (
     "id" SERIAL NOT NULL,
-    "description" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
     "picture" TEXT,
     "address_street" TEXT NOT NULL,
     "address_number" TEXT NOT NULL,
