@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
+import PersonsByIdsAndContent from '/person/dto/persons-filtering.dto';
 import { PrismaService } from '/prisma.service';
 
 @Injectable()
@@ -106,5 +107,9 @@ export class PersonService {
 
     person.active = false;
     return this.prisma.person.update({ where: { id }, data: person });
+  }
+
+  async findByQuery(query: Prisma.PersonFindManyArgs) {
+    return await this.prisma.person.findMany(query);
   }
 }

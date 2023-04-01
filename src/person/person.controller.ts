@@ -67,6 +67,12 @@ export class PersonController {
     return this.personService.findManyByNameOrPhoneNumber(text, takeResult);
   }
 
+  @Post('/query')
+  @Roles(Role.ADMIN, Role.PASTOR, Role.LEADER)
+  getPersons(@Body() query: Prisma.PersonFindManyArgs) {
+    return this.personService.findByQuery(query);
+  }
+
   @Delete(':id')
   @Roles(Role.ADMIN)
   remove(@Param('id') id: string) {

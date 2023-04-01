@@ -13,13 +13,15 @@ import { DepartmentService } from './department.service';
 
 import { Role } from '/configs/roles.config';
 import { Roles } from '/decorators/roles.decorator';
+import DepartmentCreateDto from '/department/dto/department-create.dto';
+import DepartmentUpdateDto from '/department/dto/department-update.dto';
 
 @Controller('department')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Post()
-  create(@Body() data: Prisma.DepartmentCreateInput) {
+  create(@Body() data: DepartmentCreateDto) {
     return this.departmentService.create(data);
   }
 
@@ -40,12 +42,17 @@ export class DepartmentController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.DepartmentUpdateInput) {
+  update(@Param('id') id: string, @Body() data: DepartmentUpdateDto) {
     return this.departmentService.update(+id, data);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.departmentService.remove(+id);
+  }
+
+  @Get(':id/membersId')
+  getMembersIdFromDepartment(@Param('id') id: string) {
+    return this.departmentService.findMembersOfDepartment(+id);
   }
 }
