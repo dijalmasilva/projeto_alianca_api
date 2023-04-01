@@ -17,9 +17,7 @@ export class DepartmentService {
       await this.prisma.person.update({
         where: { id: personId },
         data: {
-          roles: {
-            set: [...person.roles, role],
-          },
+          roles: person.roles.concat(role),
         },
       });
     }
@@ -64,14 +62,14 @@ export class DepartmentService {
     await this.prisma.department.update({
       data: {
         members: {
-          connectOrCreate: members.map((member) => ({
+          connectOrCreate: members.map((memberId) => ({
             create: {
-              memberId: member,
+              memberId,
             },
             where: {
               memberId_departmentId: {
                 departmentId: departmentCreated.id,
-                memberId: member,
+                memberId,
               },
             },
           })),
