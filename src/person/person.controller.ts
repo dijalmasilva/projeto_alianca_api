@@ -68,7 +68,14 @@ export class PersonController {
   }
 
   @Post('/query')
-  @Roles(Role.ADMIN, Role.PASTOR, Role.LEADER)
+  @Roles(
+    Role.ADMIN,
+    Role.PASTOR,
+    Role.LEADER,
+    Role.DEACON,
+    Role.LEVITE,
+    Role.COOPERATOR,
+  )
   getPersons(@Body() query: Prisma.PersonFindManyArgs) {
     return this.personService.findByQuery(query);
   }

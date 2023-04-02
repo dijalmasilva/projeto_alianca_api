@@ -36,9 +36,6 @@ export class AuthService {
       },
     });
 
-    console.log(`User exist?`);
-    console.log(user);
-
     if (!user) {
       const roles = [Role.VISITOR];
       if (username === MAIN_NUMBER) {
@@ -49,7 +46,7 @@ export class AuthService {
         roles.push(Role.SHEEP);
       }
 
-      const created = await this.prisma.person.create({
+      return await this.prisma.person.create({
         data: {
           roles: roles,
           name: '',
@@ -60,10 +57,6 @@ export class AuthService {
           hasAlliance: false,
         },
       });
-
-      console.log(`user created: ${created}`);
-
-      return created;
     }
 
     return user;

@@ -124,12 +124,28 @@ export class DepartmentService {
 
   async update(id: number, data: DepartmentUpdateDto) {
     const { members, leaderId, churchId, name, description } = data;
-    const found = await this.prisma.department.findUnique({ where: { id } });
+    const found = await this.prisma.department.findUnique({
+      where: { id },
+      include: { members: true },
+    });
     if (!found) {
       throw new HttpException(
         `Departamento não encontrado`,
         HttpStatus.NOT_FOUND,
       );
+    }
+
+    for (const member of found.members) {
+      if (!members.includes(member.memberId)) {
+        await this.prisma.membersOnDepartments.delete({
+          where: {
+            memberId_departmentId: {
+              departmentId: id,
+              memberId: member.memberId,
+            },
+          },
+        });
+      }
     }
 
     const departmentUpdated = this.prisma.department.update({
@@ -147,20 +163,17 @@ export class DepartmentService {
           },
         },
         members: {
-          connectOrCreate:
-            members.length > 0
-              ? members.map((member) => ({
-                  create: {
-                    memberId: member,
-                  },
-                  where: {
-                    memberId_departmentId: {
-                      departmentId: id,
-                      memberId: member,
-                    },
-                  },
-                }))
-              : [],
+          connectOrCreate: members.map((member) => ({
+            create: {
+              memberId: member,
+            },
+            where: {
+              memberId_departmentId: {
+                departmentId: id,
+                memberId: member,
+              },
+            },
+          })),
         },
       },
       where: { id },
