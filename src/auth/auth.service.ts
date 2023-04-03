@@ -97,7 +97,6 @@ export class AuthService {
   }
 
   async signOut(phoneNumber: string): Promise<void> {
-    console.log(`sign-out: `, phoneNumber);
     const count = await this.prisma.auth.count({
       where: { phoneNumber },
     });
@@ -107,15 +106,19 @@ export class AuthService {
     }
   }
 
-  async getProfile(
-    id: number,
-    include?: Prisma.PersonInclude,
-  ): Promise<PersonModel> {
-    return this.prisma.person.findUnique({
+  async getProfile(id: number, include?: Prisma.PersonInclude) {
+    const profile = await this.prisma.person.findUnique({
       where: {
         id,
       },
       include,
     });
+
+    const { accessToken } = await this.login(profile);
+
+    return {
+      profile,
+      accessToken,
+    };
   }
 }

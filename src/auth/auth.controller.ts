@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -43,8 +45,14 @@ export class AuthController {
   }
 
   @Post('/profile')
-  getProfile(@Request() req: any, @Body() include?: Prisma.PersonInclude) {
+  async getProfile(
+    @Request() req: any,
+    @Response() res: any,
+    @Body() include?: Prisma.PersonInclude,
+  ) {
     const { id } = req.user;
-    return this.authService.getProfile(id, include);
+    const result = await this.authService.getProfile(id, include);
+    res.header('x-auth-token', result.accessToken);
+    res.status(HttpStatus.OK).send(result.profile);
   }
 }
