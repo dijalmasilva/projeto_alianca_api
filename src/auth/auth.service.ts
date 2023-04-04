@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Person as PersonModel, Prisma } from '@prisma/client';
+import { Person as PersonModel, Prisma, Role } from '@prisma/client';
 
-import { Role } from '/configs/roles.config';
 import { PrismaService } from '/prisma.service';
 
 const MAIN_NUMBER = '+5583998058971';
@@ -37,13 +36,13 @@ export class AuthService {
     });
 
     if (!user) {
-      const roles = [Role.VISITOR];
+      const roles: Role[] = [Role.VISITANTE];
       if (username === MAIN_NUMBER) {
         roles.push(Role.ADMIN);
         roles.push(Role.PASTOR);
-        roles.push(Role.LEVITE);
-        roles.push(Role.LEADER);
-        roles.push(Role.SHEEP);
+        roles.push(Role.LEVITA);
+        roles.push(Role.LIDER);
+        roles.push(Role.OVELHA);
       }
 
       return await this.prisma.person.create({

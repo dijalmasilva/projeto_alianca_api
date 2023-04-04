@@ -9,11 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
 import { PersonService } from './person.service';
 
-import { Role } from '/configs/roles.config';
 import { Roles } from '/decorators/roles.decorator';
 
 @ApiBearerAuth()
@@ -48,17 +47,17 @@ export class PersonController {
   @Roles(
     Role.ADMIN,
     Role.PASTOR,
-    Role.LEADER,
-    Role.LEVITE,
-    Role.DEACON,
-    Role.COOPERATOR,
+    Role.LIDER,
+    Role.LEVITA,
+    Role.DIACONO,
+    Role.COOPERADOR,
   )
   getDepartments(@Param('id') id: string) {
     return this.personService.getDepartments(+id);
   }
 
   @Get('/filter')
-  @Roles(Role.ADMIN, Role.PASTOR, Role.LEADER)
+  @Roles(Role.ADMIN, Role.PASTOR, Role.LIDER)
   getPersonsByNameOrPhoneNumber(
     @Query('text') text: string,
     @Query('take') take: string,
@@ -71,10 +70,10 @@ export class PersonController {
   @Roles(
     Role.ADMIN,
     Role.PASTOR,
-    Role.LEADER,
-    Role.DEACON,
-    Role.LEVITE,
-    Role.COOPERATOR,
+    Role.LIDER,
+    Role.DIACONO,
+    Role.LEVITA,
+    Role.COOPERADOR,
   )
   getPersons(@Body() query: Prisma.PersonFindManyArgs) {
     return this.personService.findByQuery(query);

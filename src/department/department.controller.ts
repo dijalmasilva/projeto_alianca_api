@@ -6,11 +6,12 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 
 import { DepartmentService } from './department.service';
 
-import { Role } from '/configs/roles.config';
 import { Roles } from '/decorators/roles.decorator';
 import DepartmentCreateDto from '/department/dto/department-create.dto';
 import DepartmentUpdateDto from '/department/dto/department-update.dto';
@@ -53,5 +54,10 @@ export class DepartmentController {
   @Get(':id/membersId')
   getMembersIdFromDepartment(@Param('id') id: string) {
     return this.departmentService.findMembersOfDepartment(+id);
+  }
+
+  @Get('/filter/name')
+  getDepartmentsByName(@Query('name') name: string, @Query('limit') limit = 5) {
+    return this.departmentService.findDepartmentsByName(name, limit);
   }
 }

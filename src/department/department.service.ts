@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Role } from '@prisma/client';
 
-import { Role } from '/configs/roles.config';
 import DepartmentCreateDto from '/department/dto/department-create.dto';
 import DepartmentUpdateDto from '/department/dto/department-update.dto';
 import { PrismaService } from '/prisma.service';
@@ -27,14 +27,14 @@ export class DepartmentService {
     members: number[],
   ): Promise<void> {
     for (const memberId of members) {
-      await this.updateRoleOnUser(memberId, Role.COOPERATOR);
+      await this.updateRoleOnUser(memberId, Role.COOPERADOR);
     }
   }
 
   private async updateRoleOfLeaderInDepartment(
     leaderId: number,
   ): Promise<void> {
-    await this.updateRoleOnUser(leaderId, Role.LEADER);
+    await this.updateRoleOnUser(leaderId, Role.LIDER);
   }
 
   async create(data: DepartmentCreateDto) {
@@ -207,5 +207,17 @@ export class DepartmentService {
 
   remove(id: number) {
     return this.prisma.department.delete({ where: { id } });
+  }
+
+  async findDepartmentsByName(name: string, limit: number) {
+    return await this.prisma.department.findMany({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+      distinct: ['name'],
+      take: limit,
+    });
   }
 }
